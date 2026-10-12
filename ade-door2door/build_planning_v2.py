@@ -32,9 +32,9 @@ for r in range(6, lijst.max_row + 1):
         team_of[lead] = lijst.cell(r, 15).value          # kolom O
         LIJST_ROWS.append(r)
 
-MOVED = {'Paard', 'Audio Obscura', 'Gashouder', 'Dfrnt Festival (Tapt)', 'Lofi'}  # donkergroen in de Leadlijst
+MOVED = {'Paard', 'Audio Obscura', 'Gashouder', 'Dfrnt Festival (Tapt)', 'Lofi'}  # gemarkeerd in de Leadlijst (rechter tabel)
 NOT_PLANNED = {'Audio Obscura': 'Past evt. bij Friso + Thierry op donderdag (terug dan ca. 15:15)',
-               'Paard': 'Past evt. bij Friso + Thierry op woensdag, Rotterdam-dag (terug dan ca. 17:15)'}
+               'Paard': 'Past niet goed: op de Rotterdam-dag van Friso + Thierry (woensdag) wordt het terug ca. 17:40'}
 MEMBERS = {'Y': {'Yasmijn', 'Steven'}, 'F': {'Friso', 'Thierry'}}
 LABEL = {('Y', 1): 'Yasmijn + Steven + Milo', ('Y', 2): 'Yasmijn + Steven', ('Y', 3): 'Yasmijn + Steven',
          ('F', 1): 'Friso + Thierry', ('F', 2): 'Friso + Thierry + Cecil', ('F', 3): 'Friso + Thierry'}
@@ -82,6 +82,7 @@ TAKEN_FILL = PatternFill('solid', fgColor='FFFFF0CE')
 NEW_FILL = PatternFill('solid', fgColor='FFE2EFDA')
 OFFICE_FILL = PatternFill('solid', fgColor='FFDDEBF7')
 RED_FILL = PatternFill('solid', fgColor='FFFFC7CE')
+GREY_FILL = PatternFill('solid', fgColor='FFEDEDED')
 GREEN_FILL = PatternFill('solid', fgColor='FFC6EFCE')
 WRAP = Alignment(wrap_text=True, vertical='top')
 HHMM = 'h:mm'
@@ -246,7 +247,7 @@ def lookup_day(ref, sheet=''):
     return (f'=IFERROR(CHOOSE(COUNTIF({p}$A$1:INDEX({p}$A$1:$A${ROUTES_END},{match}),"DAG *"),'
             f'"Dinsdag","Woensdag","Donderdag"),"Niet ingepland")')
 
-bar(row, 'VERSCHOVEN NAAR YASMIJN + STEVEN | donkergroen in de Leadlijst', WHITE_B12, TITLE_FILL)
+bar(row, 'VERSCHOVEN NAAR YASMIJN + STEVEN | gemarkeerd in de Leadlijst', WHITE_B12, TITLE_FILL)
 row += 1
 header(row, ['Nieuw team', 'Dag', 'Lead', 'Leadowner', 'Status', 'Plaats', None, 'Aankomst', None, 'Toelichting'])
 row += 1
@@ -262,7 +263,7 @@ for lead in ['Gashouder', 'Dfrnt Festival (Tapt)', 'Lofi', 'Audio Obscura', 'Paa
     ws.cell(row, 8).number_format = HHMM
     ws.cell(row, 3).fill = NEW_FILL
     if lead in NOT_PLANNED:
-        ws.cell(row, 5).fill = RED_FILL
+        ws.cell(row, 5).fill = GREY_FILL
     row += 1
 row += 1
 
@@ -271,8 +272,8 @@ bar(row, 'AANDACHTSPUNTEN', WHITE_B12, TITLE_FILL)
 row += 1
 notes = [
     ('Audio Obscura + Paard', 'Niet ingepland: Yasmijn kijkt zelf of ze deze op een andere dag kan doen. Als Friso + Thierry ze '
-                              'toch meenemen: Audio Obscura past donderdag (terug ca. 15:15), Paard past woensdag op de '
-                              'Rotterdam-dag (terug ca. 17:15).'),
+                              'toch meenemen: Audio Obscura past donderdag (terug ca. 15:15). Paard (Den Haag) past nergens goed: op de '
+                              'Rotterdam-dag van woensdag wordt het terug ca. 17:40.'),
     ('Friso + Thierry, dinsdag', 'Friso is om ca. 12:25 op kantoor (uiterlijk 12:45). Vertrek kantoor staat op 14:45 (blauwe cel): '
                                  'loopt de meeting uit, pas die tijd aan en de middag schuift mee. Bij 30 min uitloop '
                                  'terug ca. 17:32. Lukt een lead niet, dan kan die donderdag nog (die dag is om ca. 14:52 klaar).'),
