@@ -197,6 +197,7 @@ ws.conditional_formatting.add(rng, CellIsRule(operator='equal', formula=['"JA"']
 ws.conditional_formatting.add(f'I{OV_FIRST}:I{tot-1}', late)
 
 # ---- herverdeling ----
+ROUTES_END = row - 1  # last row of the day blocks; lookups stop here
 bar(row, 'HERVERDELING | leads die eerst bij Emiel + Bas stonden (andere leadowner)', WHITE_B12, TITLE_FILL)
 row += 1
 header(row, ['Nieuw team', 'Nieuwe dag', 'Lead', 'Leadowner', 'Oorspronkelijk', 'Plaats', 'Stop (nieuw)',
@@ -270,12 +271,12 @@ r = FIRST + 1
 for team in TEAMS:
     for day in (1, 2, 3):
         for lead, _ in ROUTES[(team, day)][0]:
-            match = f'MATCH(B{r},{P}$C$1:$C$300,0)'
+            match = f'MATCH(B{r},{P}$C$1:$C${ROUTES_END},0)'
             ov.cell(r, 1, r - FIRST)
             ov.cell(r, 2, lead)
             ov.cell(r, 3, leads[lead]['owner'])
-            ov.cell(r, 4, f'=IFERROR(INDEX({P}$A$1:$A$300,{match}),"Niet ingepland")')
-            ov.cell(r, 5, f'=IFERROR(COUNTIF({P}$A$1:INDEX({P}$A$1:$A$300,{match}),"DAG *"),"")')
+            ov.cell(r, 4, f'=IFERROR(INDEX({P}$A$1:$A${ROUTES_END},{match}),"Niet ingepland")')
+            ov.cell(r, 5, f'=IFERROR(COUNTIF({P}$A$1:INDEX({P}$A$1:$A${ROUTES_END},{match}),"DAG *"),"")')
             r += 1
 LAST = r - 1
 OWNER_FILLS = [('Yasmijn', 'FFD9EAD3'), ('Friso', 'FFF4CCCC'), ('Thierry', 'FFCFE2F3'), ('Odin', 'FFFCE5CD')]
