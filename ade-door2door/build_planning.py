@@ -21,6 +21,8 @@ for name in ['Dag 1', 'Dag 2', 'Dag 3']:
 # normalise the two addresses that were typed differently in the source
 leads['Listen to Flow']['addr'] = 'Roodwilligen 63 | 6903 TB'
 leads['Jaarbeurs']['addr'] = 'Jaarbeursplein 6 | 3521 AL'
+# Volt (dubbel met Poppodium Volt) valt nu onder Thierry
+leads['Volt']['owner'] = 'Thierry'
 
 def maps_link(addr, place):
     q = addr.replace(' | ', ', ') + ', ' + place + ' Netherlands'
@@ -247,8 +249,52 @@ for label, text in notes:
     row += 1
 
 ws.freeze_panes = None
+
+# ---- leadoverzicht: lead + leadowner, team en dag opgehaald uit 'Planning 2 teams' ----
+ov = wb.create_sheet('Leadoverzicht', 0)
+ov.sheet_properties.tabColor = '17243A'
+for col, w in zip('ABCDEFGH', [6, 30, 14, 20, 8, 4, 14, 10]):
+    ov.column_dimensions[col].width = w
+for c in range(1, 6):
+    ov.cell(1, c).font, ov.cell(1, c).fill = WHITE_B14, TITLE_FILL
+ov.cell(1, 1, 'ADE Door-to-Door | Leadoverzicht P-Logic')
+ov.row_dimensions[1].height = 18.95
+ov.cell(2, 1, "Team en Dag komen automatisch uit het tabblad 'Planning 2 teams'. "
+              'Poppodium Volt is weggelaten (dubbel met Volt).')
+FIRST = 4
+for c, v in enumerate(['#', 'Lead', 'Leadowner', 'Team', 'Dag'], 1):
+    cell = ov.cell(FIRST, c, v)
+    cell.font, cell.fill = WHITE_B11, HEAD_FILL
+P = "'Planning 2 teams'!"
+r = FIRST + 1
+for team in TEAMS:
+    for day in (1, 2, 3):
+        for lead, _ in ROUTES[(team, day)][0]:
+            match = f'MATCH(B{r},{P}$C$1:$C$300,0)'
+            ov.cell(r, 1, r - FIRST)
+            ov.cell(r, 2, lead)
+            ov.cell(r, 3, leads[lead]['owner'])
+            ov.cell(r, 4, f'=IFERROR(INDEX({P}$A$1:$A$300,{match}),"Niet ingepland")')
+            ov.cell(r, 5, f'=IFERROR(COUNTIF({P}$A$1:INDEX({P}$A$1:$A$300,{match}),"DAG *"),"")')
+            r += 1
+LAST = r - 1
+OWNER_FILLS = [('Yasmijn', 'FFD9EAD3'), ('Friso', 'FFF4CCCC'), ('Thierry', 'FFCFE2F3'), ('Odin', 'FFFCE5CD')]
+for name, color in OWNER_FILLS:
+    ov.conditional_formatting.add(f'C{FIRST+1}:C{LAST}', CellIsRule(
+        operator='equal', formula=[f'"{name}"'], fill=PatternFill('solid', fgColor=color)))
+for c, v in enumerate(['Legenda', 'Leads'], 7):
+    cell = ov.cell(FIRST, c, v)
+    cell.font, cell.fill = WHITE_B11, HEAD_FILL
+for i, (name, color) in enumerate(OWNER_FILLS, FIRST + 1):
+    ov.cell(i, 7, name).fill = PatternFill('solid', fgColor=color)
+    ov.cell(i, 8, f'=COUNTIF($C${FIRST+1}:$C${LAST},G{i})')
+tot = FIRST + 1 + len(OWNER_FILLS)
+ov.cell(tot, 7, 'Totaal').font = BOLD
+ov.cell(tot, 8, f'=SUM(H{FIRST+1}:H{tot-1})').font = BOLD
+ov.freeze_panes = f'A{FIRST+1}'
+
 wb.active = 0
 for s in wb.worksheets:
-    s.sheet_view.tabSelected = (s.title == 'Planning 2 teams')
+    s.sheet_view.tabSelected = (s.title == 'Leadoverzicht')
 wb.save(dst)
 print('saved', dst, 'rows', row, 'blocks', blocks)
