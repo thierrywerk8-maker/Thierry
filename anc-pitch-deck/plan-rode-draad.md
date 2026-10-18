@@ -32,10 +32,13 @@ Hoe het concept werkt (uit Thierry's antwoorden):
 - **80% = always familiar, 20% = never the same.** Dat maakt de slogan concreet en is meteen het antwoord op
   "hoe blijf je herkenbaar als alles steeds nieuw is".
 
-**De 5 pillars vormen een keten** (elke keuze volgt uit de vorige):
-**Theme → Location → Sound → Production → Design.**
-Het thema bepaalt de locatie, de locatie bepaalt welke sound past, en daarop volgen productie en design.
-Op deze vijf slaat "Never the same, always familiar".
+**Het organogram** (uitgewerkt in Figma, Frame 616), onder de quote **"Sharing extraordinary experiences together."**:
+**The spark** (iets bijzonders uit natuur of cultuur, bv. het Colosseum) → **Events** (we maken het tastbaar,
+om samen te beleven) → **4 pillars: Theme · Location · Sound · Production.** Design valt onder Production.
+
+Er is **geen vaste volgorde**: één pillar geeft de trigger en de rest volgt daar logisch uit. Bijvoorbeeld
+Spaanse cultuur (thema) → locatie → sound → productie, of het Colosseum (locatie) → Romeins thema → sound → productie.
+Op deze vier pillars slaat "Never the same, always familiar".
 
 **Community staat los van de pillars.** Die beweegt niet mee, maar is universeel en constant: één persona,
 **creative spirits die op zoek zijn naar nieuwe, mooie ervaringen in het leven**. De pillars zijn wat die
@@ -45,10 +48,10 @@ meteen de doelgroep-slide.)
 Chronologisch: **altijd beginnen met de why** → wat het concept is → wie het aantrekt → bewijs (archief) →
 herkenbaarheid → samen met partners → impact.
 
-## Opbouw (± 16 slides)
+## Opbouw (± 15 slides)
 
 Index met 7 hoofdstukken: **Our why · The concept · Our community · Archive · Recognition · Collaborations · Social impact**
-(de 5 pillars zijn subpagina's van The concept).
+(de 4 pillars zijn subpagina's van The concept).
 
 | # | Hoofdstuk | Slide | Kernboodschap |
 |---|---|---|---|
@@ -56,14 +59,14 @@ Index met 7 hoofdstukken: **Our why · The concept · Our community · Archive �
 | 01 | | Index | 7 hoofdstukken |
 | 02 | **Our why** | We're here to experience extraordinary things | Bijzondere plekken (natuur en cultuur), de muziek die daar hoort en een community om het mee te delen. Het leven is kort: samen stilstaan en beleven met al je zintuigen. Memories for life. Tekst: zie *Teksten (concept)*. |
 | 03 | **The concept** | It's in the name | Elke editie is een nieuw concept. Never the same, always familiar. |
-| 04 | | How it works | De keten Theme → Location → Sound → Production → Design, vaste formats en de 80/20-regel met het geel/oranje-voorbeeld. Thema en locatie bepalen de **dynamiek** (DJ als middelpunt óf DJ in de hoek van een jazz-cocktailbar), en die dynamiek bepaalt sound, productie en indeling. |
-| 05–09 | | 5 pillars | **Theme · Location · Sound · Production · Design.** Vaste template per pillar met twee kolommen: *Always familiar* (onze boundaries) en *Never the same* (wat per editie/locatie verandert). |
-| 10 | **Our community** | Creative spirits | Eén persona die niet meebeweegt: creative spirits op zoek naar nieuwe, mooie ervaringen. De pillars trekken hen steeds weer aan. |
-| 11–12 | **Archive** | Timeline + editions | Timeline vanaf 2023: aantal edities, bezoekers per jaar, groei. Per editie: thema, foto's, filmpje, bezoekersaantal. |
-| 13 | **Recognition** | The signature | Hoe mensen ANC op social media direct herkennen: naam, handgeschreven logo, beeldtaal, terugkerende elementen. |
-| 14 | **Collaborations** | Partners | Voor merken/sponsors (wat ze krijgen) en venues (wat we met hun locatie doen). |
-| 15 | **Social impact** | Impact | Terug naar de why: clean, eerlijk, veilig, samen zijn. Belangrijk voor gemeente/investeerders. Voorstel: hier ook "what we choose not to be" (geen copy-paste, geen excess of ego), zodat de why positief blijft. |
-| 16 | | Closing | "What's our next concept?" + contact. |
+| 04 | | How it works | Het organogram: spark → events → Theme · Location · Sound · Production, zonder vaste volgorde. Vaste formats en de 80/20-regel met het geel/oranje-voorbeeld. Thema en locatie bepalen de **dynamiek** (DJ als middelpunt óf DJ in de hoek van een jazz-cocktailbar), en die dynamiek bepaalt sound, productie en indeling. |
+| 05–08 | | 4 pillars | **Theme · Location · Sound · Production** (design valt onder Production). Vaste template per pillar met twee kolommen: *Always familiar* (onze boundaries) en *Never the same* (wat per editie/locatie verandert). |
+| 09 | **Our community** | Creative spirits | Eén persona die niet meebeweegt: creative spirits op zoek naar nieuwe, mooie ervaringen. De pillars trekken hen steeds weer aan. |
+| 10–11 | **Archive** | Timeline + editions | Timeline vanaf 2023: aantal edities, bezoekers per jaar, groei. Per editie: thema, foto's, filmpje, bezoekersaantal. |
+| 12 | **Recognition** | The signature | Hoe mensen ANC op social media direct herkennen: naam, handgeschreven logo, beeldtaal, terugkerende elementen. |
+| 13 | **Collaborations** | Partners | Voor merken/sponsors (wat ze krijgen) en venues (wat we met hun locatie doen). |
+| 14 | **Social impact** | Impact | Terug naar de why: clean, eerlijk, veilig, samen zijn. Belangrijk voor gemeente/investeerders. Voorstel: hier ook "what we choose not to be" (geen copy-paste, geen excess of ego), zodat de why positief blijft. |
+| 15 | | Closing | "What's our next concept?" + contact. |
 
 Voorbeeld van de pillar-template (Production, uit Thierry's input):
 - *Always familiar:* intimiteit tussen artiest en crowd; het voelt altijd als een pop-up party; geen scheiding tussen DJ en publiek.
@@ -138,5 +141,5 @@ Nederlandse versie (ter controle):
 - Alleen de slidetitels achter elkaar lezen vertelt het hele verhaal.
 - De slogan komt terug in de concept-slide, in elke pillar-slide (twee kolommen) en in Recognition, maar niet
   bij Community (die is constant).
-- De pillars staan overal in de ketenvolgorde: Theme → Location → Sound → Production → Design.
+- De pillars heten overal Theme · Location · Sound · Production, zonder vaste volgorde (één pillar triggert, de rest volgt).
 - Na push: `git status` schoon en `git log origin/claude/clever-rubin-ve8lcp` toont de commit.
