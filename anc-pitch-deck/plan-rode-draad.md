@@ -54,15 +54,15 @@ Index met 7 hoofdstukken: **Our why · The concept · Our community · Archive �
 |---|---|---|---|
 | 00 | | Cover | A NEW CONCEPT |
 | 01 | | Index | 7 hoofdstukken |
-| 02 | **Our why** | The spark | Waarom we dit doen en lang willen volhouden: het gevoel van de eerste keer. Copy-paste concepten → automatische piloot, excess, ego. Onze positieve bijdrage aan de branche en aan een grote groep mensen. (Thierry vult dit nog verder aan.) |
+| 02 | **Our why** | We're here to experience extraordinary things | Bijzondere plekken (natuur en cultuur), de muziek die daar hoort en een community om het mee te delen. Het leven is kort: samen stilstaan en beleven met al je zintuigen. Memories for life. Tekst: zie *Teksten (concept)*. |
 | 03 | **The concept** | It's in the name | Elke editie is een nieuw concept. Never the same, always familiar. |
-| 04 | | How it works | De keten Theme → Location → Sound → Production → Design, vaste formats en de 80/20-regel met het geel/oranje-voorbeeld. |
+| 04 | | How it works | De keten Theme → Location → Sound → Production → Design, vaste formats en de 80/20-regel met het geel/oranje-voorbeeld. Thema en locatie bepalen de **dynamiek** (DJ als middelpunt óf DJ in de hoek van een jazz-cocktailbar), en die dynamiek bepaalt sound, productie en indeling. |
 | 05–09 | | 5 pillars | **Theme · Location · Sound · Production · Design.** Vaste template per pillar met twee kolommen: *Always familiar* (onze boundaries) en *Never the same* (wat per editie/locatie verandert). |
 | 10 | **Our community** | Creative spirits | Eén persona die niet meebeweegt: creative spirits op zoek naar nieuwe, mooie ervaringen. De pillars trekken hen steeds weer aan. |
 | 11–12 | **Archive** | Timeline + editions | Timeline vanaf 2023: aantal edities, bezoekers per jaar, groei. Per editie: thema, foto's, filmpje, bezoekersaantal. |
 | 13 | **Recognition** | The signature | Hoe mensen ANC op social media direct herkennen: naam, handgeschreven logo, beeldtaal, terugkerende elementen. |
 | 14 | **Collaborations** | Partners | Voor merken/sponsors (wat ze krijgen) en venues (wat we met hun locatie doen). |
-| 15 | **Social impact** | Impact | Terug naar de why: clean, eerlijk, veilig, samen zijn. Belangrijk voor gemeente/investeerders. |
+| 15 | **Social impact** | Impact | Terug naar de why: clean, eerlijk, veilig, samen zijn. Belangrijk voor gemeente/investeerders. Voorstel: hier ook "what we choose not to be" (geen copy-paste, geen excess of ego), zodat de why positief blijft. |
 | 16 | | Closing | "What's our next concept?" + contact. |
 
 Voorbeeld van de pillar-template (Production, uit Thierry's input):
@@ -73,6 +73,46 @@ Schrijfregels voor een deck dat zonder toelichting werkt:
 - Elke slidetitel is een uitspraak, geen label: alleen de titels achter elkaar vertellen al het verhaal.
 - Max. ~60 woorden bodytekst per slide; beeld doet de rest.
 - Het "toxic"-punt positief framen ("what we choose not to be"), niet de branche aanvallen.
+
+## Teksten (concept)
+
+### 02 · Our why (102 woorden)
+
+> **We're here to experience extraordinary things.**
+> A sunset on the beach. A waterfall in golden hour. An icy mountain peak. The Colosseum.
+> Wonders of nature and culture that make your creativity spark.
+>
+> We get eighty, maybe a hundred years to take it all in.
+> So how beautiful is it to pause every now and then,
+> and experience it together, with all your senses?
+>
+> That's why we create events.
+> Breathtaking places, the music that belongs there, and a community to share it with.
+> Every edition a new concept, because there is always more to discover.
+>
+> **Not just a night out. Memories for life.**
+
+Nederlandse versie (ter controle):
+
+> **We zijn hier om bijzondere dingen te ervaren.**
+> Een zonsondergang op het strand. Een waterval tijdens golden hour. Een besneeuwde bergtop. Het Colosseum.
+> Wonderen van natuur en cultuur die je creativiteit laten sprankelen.
+>
+> We hebben tachtig, misschien honderd jaar om het allemaal te zien.
+> Hoe mooi is het dan om af en toe stil te staan,
+> en het samen te beleven, met al je zintuigen?
+>
+> Daarom maken we evenementen.
+> Adembenemende plekken, de muziek die daar hoort, en een community om het mee te delen.
+> Elke editie een nieuw concept, want er is altijd meer te ontdekken.
+>
+> **Niet zomaar een avond uit. Memories for life.**
+
+### 04 · How it works: de dynamiek (conceptregel)
+
+> Not every edition needs a stage. Sometimes the DJ is the centre of the room. Sometimes they play from the
+> corner of a jazz cocktail bar while everyone vibes together. The theme and location set the dynamic, and the
+> dynamic shapes the sound, the production and the layout.
 
 ## Uitvoering na akkoord
 
