@@ -1,45 +1,29 @@
 # ADE 2026 – Standaard delegate-chat (Paylogic by Eventim Hangout)
 
-Voor de ADE-app (delegateslijst). Vervang `[Name]` / `[Naam]` of maak er gewoon "Hi!" van.
+Voor de ADE-app (delegateslijst). Vervang `[Name]` / `[Naam]` of maak er gewoon "Hey!" van.
 
 ---
 
 ## English
 
-Hi [Name],
+Hey [Name]! Thierry here from Paylogic by Eventim, we do the ticketing for Tomorrowland, No Art, Audio Obscura and Hangar Festival.
 
-How's it going? I'm Thierry from Paylogic by Eventim. We do the ticketing for Tomorrowland, No Art, Audio Obscura and Hangar Festival, among others.
+This Wednesday and Thursday (21 & 22 Oct) we're hosting a hangout at the Borzo Gallery, across from Felix Meritis. We're there from 10 till 6, so come by for a coffee whenever. Wednesday we've got drinks from 4 to 6 and Thursday a brunch from 11 to 1.
 
-Just like previous years, we're hosting a hangout during ADE: the Paylogic by Eventim Hangout on Wednesday 21 & Thursday 22 October, in the Borzo Gallery right across from Felix Meritis. We're there from 10:00 to 18:00, so feel free to drop by for a coffee anytime 😊
+Would be great to meet! You can sign up here: https://www.eventimb2b.nl/en/the-eventim-hangout
 
-On top of that:
-🍻 Wed 21 Oct, 16:00–18:00: warm-up drinks with our partner Fanalists
-🥐 Thu 22 Oct, 11:00–13:00: The Come GET Brunch with our partner GET
-
-You can sign up here: https://www.eventimb2b.nl/en/the-eventim-hangout
-
-Would love to hear where you want to take your events. Can't make it? Just let me know and we'll find another moment!
-
-Talk soon,
+Cheers,
 Thierry
 
 ---
 
 ## Nederlands
 
-Hi [Naam],
+Hey [Naam]! Thierry hier van Paylogic by Eventim, wij doen de ticketing voor Tomorrowland, No Art, Audio Obscura en Hangar Festival.
 
-Alles goed? Ik ben Thierry van Paylogic by Eventim. Wij doen onder andere de ticketing voor Tomorrowland, No Art, Audio Obscura en Hangar Festival.
+Deze woensdag en donderdag (21 & 22 okt) hosten we een hangout in de Borzo Gallery, tegenover Felix Meritis. We zijn er van 10 tot 6, dus kom gerust langs voor een bakje koffie. Woensdag is er van 4 tot 6 een borrel en donderdag van 11 tot 1 een brunch.
 
-Net als afgelopen jaren hosten we tijdens ADE een hangout: de Paylogic by Eventim Hangout op woensdag 21 & donderdag 22 oktober, in de Borzo Gallery recht tegenover Felix Meritis. We zijn er van 10:00 tot 18:00, dus je bent de hele dag welkom voor een bakje koffie 😊
-
-Daarnaast:
-🍻 Wo 21 okt, 16:00–18:00: warm-up borrel met onze partner Fanalists
-🥐 Do 22 okt, 11:00–13:00: The Come GET Brunch met onze partner GET
-
-Aanmelden kan via: https://www.eventimb2b.nl/en/the-eventim-hangout
-
-Lijkt me leuk om te horen waar je met je events naartoe wilt. Kom je er niet aan toe? Laat het even weten, dan zoeken we een ander moment!
+Leuk als je langskomt! Aanmelden kan hier: https://www.eventimb2b.nl/en/the-eventim-hangout
 
 Spreken elkaar!
 Thierry
