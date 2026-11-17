@@ -9,9 +9,21 @@ _Opgesteld op 17 november 2026. Werkdocument, gebaseerd op de gesprekken over po
 | **Deze week** (17–21 nov) | Audio Obscura en Making Waves | Presentatie Audio Obscura (do 19 nov), Making Waves afronden |
 | **23 nov – begin feb** | Hunting season afmaken | Deals binnen, advisory board gestart, top-10-overzicht |
 | **Dec – jan, als er ruimte is** | Concurrentieanalyse Celebratix | Analyse + battlecard voor sales |
+| **Jan – mrt** | Playbook | De fases van een ticketingbedrijf, en waar wij en Celebratix staan |
 | **Begin februari** | MT-pitch | Wake-up-call-presentatie voor Ray en het MT |
-| **Feb – aug 2027** | Bouwseizoen | Strategisch plan + eerste zichtbare levering aan de board |
+| **Feb – aug 2027** | Relaties onderhouden en strategisch vooruitdenken | Strategisch plan + eerste zichtbare levering aan de board |
 | **Vanaf sept 2027** | Volgend hunting season | Nieuw verhaal, nu mét bewijs |
+
+## Het jaarritme
+
+- **Hunting season (september – begin februari):** deals tekenen.
+- **Daarbuiten (februari – augustus):** relaties onderhouden en strategisch vooruitdenken, voor volgend jaar en de jaren erna.
+- **Een vast uitzoommoment**, ook tijdens het hunting season (bijvoorbeeld eens per maand). Ieders bucket is vol, dus als het niet gepland staat, gebeurt het niet. Bespreek dan de vijf vragen:
+  1. Hoe staan we in de race?
+  2. Hoe staan we tegenover onze concurrenten?
+  3. Wat is het plan van onze concurrenten?
+  4. Hoe kunnen we ons beschermen?
+  5. Hoe moeten we ons uiten?
 
 ---
 
@@ -89,7 +101,22 @@ Combineer kennis uit het veld met deskresearch. Internet alleen is niet genoeg: 
 
 ---
 
-## 4. MT-pitch (begin februari)
+## 4. Playbook: de fases van een ticketingbedrijf (januari – maart)
+
+Een vast naslagwerk. Hoe verlopen de fases binnen ticketing, in welke fase zitten wij en de concurrent, en waar moeten wij ons dan op focussen?
+
+- [ ] **De fases beschrijven:** startup, scale-up, het midden, gevestigd, en daarna vernieuwing of verval. Per fase de kracht, de knelpunten en de typische checkpoints.
+- [ ] **De checkpoints die Paylogic zelf al is tegengekomen.** Vraag het aan collega's die er al 10 à 15 jaar werken: wanneer begon het bij ons te knellen, en waarom? De kans is groot dat Celebratix dezelfde checkpoints tegenkomt.
+- [ ] **Positie bepalen:** Paylogic zit in de gevestigde fase, in een laagconjunctuur. Celebratix zit tussen scale-up en het midden, in een hoogconjunctuur.
+- [ ] **Eerlijke aannames over Celebratix:**
+  - Ze denken hier zelf ook over na. Ze struikelen niet overal over, maar krijgen wel een rugzak: een achterban die onderhoud vraagt.
+  - Ze krijgen meer geld en een groter team. Met een groter team wordt snel ontwikkelen bijna altijd lastiger, maar misschien pakken zij dat beter aan dan wij. Uitzoeken.
+- [ ] **Per fase vastleggen waar wij ons tegenover de concurrent op focussen.**
+- [ ] **Output:** een playbook dat we elk jaar vóór het hunting season bijwerken.
+
+---
+
+## 5. MT-pitch (begin februari)
 
 Doe deze pitch na het hunting season, met de uitkomsten van de drie trajecten erbij. Gewonnen of verloren: het zijn allebei argumenten.
 
@@ -97,17 +124,19 @@ Doe deze pitch na het hunting season, met de uitkomsten van de drie trajecten er
   - de wake-up call (de quote);
   - wat er op het spel staat: de top 10 en het domino-effect;
   - het gevaar van Celebratix, onderbouwd met de analyse;
+  - waar we staan volgens het playbook (fase en conjunctuur);
+  - de visual van horizontaal (product) en verticaal (internationaal);
   - heldere drivers waarom we moeten veranderen;
   - de vraag aan het MT: wat zijn we bereid vrij te maken aan capaciteit, budget en mensen?
 
 ---
 
-## 5. Strategisch plan (februari – augustus 2027, het bouwseizoen)
+## 6. Strategisch plan (februari – augustus 2027)
 
 - [ ] **De conjunctuurcyclus in kaart brengen:** Celebratix zit in een hoogconjunctuur, Paylogic in een laagconjunctuur. Wat is onze weg terug?
-- [ ] **Horizontaal (internationaal):** welke markten, en welke kennis en welk kapitaal levert dat op?
-- [ ] **Verticaal (product):** een festivalroadmap, gestuurd door de advisory board.
-- [ ] **Het baken:** alles wat we horizontaal doen, moet het verticale voeden. Zo gaat internationaal niet ten koste van het product.
+- [ ] **Verticaal (internationaal, omhoog):** welke markten, hoe positioneren we ons naar buiten, en welke kennis en welk kapitaal levert dat op?
+- [ ] **Horizontaal (product):** een festivalroadmap, gestuurd door de advisory board.
+- [ ] **Het baken:** alles wat we verticaal doen, moet het horizontale voeden. Zo gaat internationaal niet ten koste van het product.
 - [ ] **Onderhoud en bouwen scheiden:** vaste capaciteit voor het product van de toekomst, klanten indelen in niveaus, en geen maatwerk zonder dat iedereen er iets aan heeft.
 - [ ] **De twee zichtbare oppervlakken:** het organisatordashboard en de checkout, plus de business case voor design (conversie).
 - [ ] **Partners boven alles-in-één.**
@@ -116,7 +145,7 @@ Doe deze pitch na het hunting season, met de uitkomsten van de drie trajecten er
 
 ---
 
-## 6. Volgend hunting season (vanaf september 2027)
+## 7. Volgend hunting season (vanaf september 2027)
 
 - [ ] Een nieuw verhaal, nu mét bewijs: wat heeft de board opgeleverd?
 - [ ] De battlecard bijwerken.

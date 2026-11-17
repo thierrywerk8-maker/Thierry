@@ -14,11 +14,13 @@ _Vastgelegd op 17 november 2026. Licht geredigeerd vanuit gesproken tekst._
 
 ## De visie in de kiem
 
-> "Wij zijn nu op het punt dat we de slagkracht en de positie hebben om ons internationaal, horizontaal, te verbreden: de kennis en de kunde. Dat heeft Celebratix momenteel nog niet. Maar we moeten ervoor zorgen dat we, doordat we ons horizontaal verbreden, straks met man en macht harder verticaal kunnen ontwikkelen. Want dat is uiteindelijk waar de organisator profijt van heeft."
+> "Wij zijn nu op het punt dat we de slagkracht en de positie hebben om ons internationaal, verticaal, te verbreden: de kennis en de kunde. Dat heeft Celebratix momenteel nog niet. Maar we moeten ervoor zorgen dat we, doordat we verticaal groeien, straks met man en macht harder horizontaal kunnen ontwikkelen. Want dat is uiteindelijk waar de organisator profijt van heeft."
 
-- **Horizontaal** = internationaal: meer partijen, meer kennis, meer kapitaal.
-- **Verticaal** = het festivalproduct doorontwikkelen: waar de organisator écht iets aan heeft.
-- Horizontaal is het middel, verticaal is het doel.
+- **Verticaal (omhoog)** = internationaal: reach naar het buitenland en positionering naar buiten. Dat levert meer partijen, kennis en kapitaal op.
+- **Horizontaal** = het festivalproduct verbreden en doorontwikkelen: waar de organisator écht iets aan heeft.
+- Verticaal is het middel, horizontaal is het doel.
+
+_Eerder in het gesprek werden horizontaal en verticaal andersom gebruikt. Bovenstaande definitie is de definitieve._
 
 ## Context
 
