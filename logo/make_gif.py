@@ -2,12 +2,14 @@
 """Maak een geanimeerde GIF van het Salt Wave-logo waarin alleen het zonnetje draait.
 
 Bron:   logo/source/saltwave-logo.png  (900 x 300, wit logo op transparant)
-Output: logo/saltwave-logo-sun.gif     (225 x 75, transparante achtergrond)
+Output: logo/saltwave-logo-225x75.gif  (225 x 75, transparante achtergrond)
 
 Het zonnetje wordt op volle resolutie geroteerd en daarna 4x verkleind, zodat de
-randen netjes anti-aliased zijn. GIF kent geen half-transparante pixels, dus de
-zachte randen worden gemengd met de achtergrondkleur van de shop (BG). Pixels die
-bijna volledig transparant zijn worden helemaal transparant.
+randen netjes anti-aliased zijn. Draaien, verkleinen en mengen gebeurt in lineair
+licht (gamma-correct), zodat dunne witte lijnen hun dikte en helderheid houden.
+GIF kent geen half-transparante pixels, dus de zachte randen worden gemengd met de
+achtergrondkleur van de shop (BG). Pixels die bijna volledig transparant zijn
+worden helemaal transparant.
 
 Gebruik:  python3 logo/make_gif.py
 """
@@ -21,14 +23,16 @@ from PIL import GifImagePlugin, Image
 
 HERE = Path(__file__).resolve().parent
 SRC = HERE / "source" / "saltwave-logo.png"
-OUT = HERE / "saltwave-logo-sun.gif"
+OUT = HERE / "saltwave-logo-225x75.gif"
 
 BG = np.array([0x24, 0x80, 0xA5], dtype=np.float64)  # shop-achtergrond #2480A5
 OUT_SIZE = (225, 75)
 SECONDS_PER_TURN = 8.0
-FRAMES = 160                      # 160 x 50 ms = 8,0 s
+FRAMES = 200                      # 200 x 40 ms = 8,0 s (25 fps)
 DELAY_CS = round(SECONDS_PER_TURN * 100 / FRAMES)
-ALPHA_CUTOFF = 0.10               # dekking (0-1) waaronder een pixel transparant wordt
+assert DELAY_CS * FRAMES == round(SECONDS_PER_TURN * 100)
+ALPHA_CUTOFF = 0.04               # dekking (0-1) waaronder een pixel transparant wordt
+LINEAR_LIGHT = True               # gamma-correct draaien/verkleinen/mengen
 MAX_BYTES = 300 * 1024
 
 # Gebied in de bron waarin alleen het zonnetje staat (gecontroleerd hieronder).
@@ -85,28 +89,58 @@ def split_layers(src: Image.Image):
     return Image.fromarray(static, "RGBA"), Image.fromarray(sun, "RGBA"), info
 
 
+def srgb_to_linear(c: np.ndarray) -> np.ndarray:
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def linear_to_srgb(c: np.ndarray) -> np.ndarray:
+    c = np.clip(c, 0.0, 1.0)
+    return np.where(c <= 0.0031308, c * 12.92, 1.055 * c ** (1 / 2.4) - 0.055)
+
+
+def premultiplied(layer: Image.Image) -> list[np.ndarray]:
+    """RGBA -> vier float32-kanalen (R*a, G*a, B*a, a), in lineair licht."""
+    arr = np.array(layer.convert("RGBA"), dtype=np.float64) / 255.0
+    rgb, a = arr[:, :, :3], arr[:, :, 3:4]
+    if LINEAR_LIGHT:
+        rgb = srgb_to_linear(rgb)
+    pm = np.concatenate([rgb * a, a], axis=2).astype(np.float32)
+    return [pm[:, :, k] for k in range(4)]
+
+
 def render_frames(static: Image.Image, sun: Image.Image, center) -> list[np.ndarray]:
-    """Geeft per frame een float-array (h, w, 4): premultiplied RGB + alpha, 0-1."""
-    static_pm = static.convert("RGBa")
+    """Geeft per frame een float-array (h, w, 4): premultiplied RGB + alpha, 0-1
+    (RGB in lineair licht als LINEAR_LIGHT aan staat)."""
+    static_ch = premultiplied(static)
+    sun_ch = [Image.fromarray(c, "F") for c in premultiplied(sun)]
     frames = []
     for i in range(FRAMES):
         angle = -360.0 * i / FRAMES          # negatief = met de klok mee
-        rot = sun.convert("RGBa").rotate(angle, resample=Image.Resampling.BICUBIC,
-                                         center=center)
-        # Zon en rest overlappen nooit, dus optellen = samenstellen.
-        full = np.array(static_pm, dtype=np.uint16) + np.array(rot, dtype=np.uint16)
-        full = Image.fromarray(np.clip(full, 0, 255).astype(np.uint8), "RGBa")
-        small = full.resize(OUT_SIZE, Image.Resampling.LANCZOS)
-        frames.append(np.array(small, dtype=np.float64) / 255.0)
+        small = []
+        for k in range(4):
+            rot = np.array(sun_ch[k].rotate(angle, resample=Image.Resampling.BICUBIC,
+                                            center=center))
+            # Zon en rest overlappen nooit, dus optellen = samenstellen.
+            full = Image.fromarray(static_ch[k] + rot, "F")
+            small.append(np.array(full.resize(OUT_SIZE, Image.Resampling.LANCZOS),
+                                  dtype=np.float64))
+        f = np.stack(small, axis=2)
+        a = np.clip(f[:, :, 3:4], 0.0, 1.0)
+        pm = np.clip(f[:, :, :3], 0.0, a)    # wit is max. 1, dus kleur <= dekking
+        frames.append(np.concatenate([pm, a], axis=2))
     return frames
 
 
 def matte(frame: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Mengt premultiplied kleur met BG; geeft (rgb uint8, opaque bool)."""
-    pm, a = frame[:, :, :3] * 255.0, frame[:, :, 3:4]
-    rgb = pm + (1.0 - a) * BG
+    pm, a = frame[:, :, :3], frame[:, :, 3:4]
+    bg = BG / 255.0
+    if LINEAR_LIGHT:
+        rgb = linear_to_srgb(pm + (1.0 - a) * srgb_to_linear(bg))
+    else:
+        rgb = pm + (1.0 - a) * bg
     opaque = a[:, :, 0] >= ALPHA_CUTOFF
-    return np.clip(np.rint(rgb), 0, 255).astype(np.uint8), opaque
+    return np.clip(np.rint(rgb * 255.0), 0, 255).astype(np.uint8), opaque
 
 
 def build_palette(mattes) -> np.ndarray:
@@ -122,41 +156,42 @@ def build_palette(mattes) -> np.ndarray:
     return np.unique(pal, axis=0)
 
 
-def to_indices(rgb: np.ndarray, opaque: np.ndarray, palette: np.ndarray) -> np.ndarray:
-    """Zet een gematte frame om naar paletindices; transparant = index 255."""
+def to_indices(rgb: np.ndarray, opaque: np.ndarray, palette: np.ndarray):
+    """Zet een gematte frame om naar paletindices. Geeft (indices voor elke pixel,
+    dekkend-masker); transparante pixels krijgen pas in write_gif index 255."""
     flat = rgb.reshape(-1, 3).astype(np.int32)
     uniq, inv = np.unique(flat, axis=0, return_inverse=True)
     d = ((uniq[:, None, :] - palette[None, :, :].astype(np.int32)) ** 2).sum(-1)
     idx = d.argmin(1)[inv.ravel()].reshape(rgb.shape[:2]).astype(np.uint8)
-    idx[~opaque] = TRANSPARENT
-    return idx
+    return idx, opaque
 
 
 TRANSPARENT = 255
 
 
-def write_gif(path: Path, frames: list[np.ndarray], palette: np.ndarray) -> np.ndarray:
+def write_gif(path: Path, frames: list, palette: np.ndarray):
     """Schrijft de GIF met een frame-opbouw zonder spookbeelden.
 
     - Frame 0: het volledige logo (blijft staan, disposal 1).
     - Frame 1..N-1: alleen het vak rond het zonnetje; na tonen wordt dat vak
       gewist (disposal 2), zodat pixels die transparant worden nooit het vorige
       frame laten doorschemeren.
-    Omdat frame 1 bovenop frame 0 komt, laat frame 0 in het zonvak alleen de
-    pixels zien die in frame 1 ook dekkend zijn (verschil: een paar vrijwel
-    doorzichtige randpixels, 50 ms lang).
+    Frame 1 komt bovenop frame 0. Pixels die in frame 0 dekkend zijn en in
+    frame 1 transparant zouden worden, schrijft frame 1 daarom dekkend, met hun
+    juist gemengde kleur (vrijwel exact #2480A5). Zo is ook dat frame op de
+    shop-achtergrond exact.
 
     Geeft de verwachte beelden (indices) terug zoals een browser ze toont.
     """
-    stack = np.stack(frames)
+    expected = [np.where(op, full, TRANSPARENT).astype(np.uint8) for full, op in frames]
+    keep = (expected[0] != TRANSPARENT) & (expected[1] == TRANSPARENT)
+    expected[1][keep] = frames[1][0][keep]
+    print(f"frame 1: {int(keep.sum())} bijna-transparante randpixels dekkend gehouden")
+
+    stack = np.stack(expected)
     changing = (stack != stack[0]).any(0)
     ys, xs = np.nonzero(changing)
     x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
-
-    first = frames[0].copy()
-    box = first[y0:y1, x0:x1]
-    box[frames[1][y0:y1, x0:x1] == TRANSPARENT] = TRANSPARENT
-    expected = [first] + frames[1:]
 
     pal = np.vstack([palette, np.repeat(BG.astype(np.uint8)[None], 256 - len(palette), 0)])
     w, h = OUT_SIZE
