@@ -1,0 +1,48 @@
+﻿moederorganisatie;zoekpatroon;actie;reden;screening;verificatie
+Free Your Mind;free your mind;Verwijderen;Festivalorganisatie met circa twintig evenementen en meer dan 200.000 bezoekers per jaar (2023);Colleguescreening;LinkedIn Free Your Mind, genoemd in colleguescreening
+Elevation Events;\bsoenda\b|\bsmeerboel\b|\bduikboot festival\b|strand oog in al|\bsoia\b|elevation events;Verwijderen;Organiseert jaarlijks circa vijftien evenementen;Colleguescreening;Genoemd in colleguescreening
+MOJO / Live Nation;down the rabbit hole|^lowlands$|\bmojo concerts\b;Verwijderen;Onderdeel van MOJO (Live Nation), grote festivalorganisatie;Colleguescreening;Lowlands toegevoegd in aanvullende screening (ook MOJO)
+Dekmantel;lentekabinet|\bdekmantel\b;Verwijderen;Onderdeel van Dekmantel;Colleguescreening;
+Art of Dance / ID&T;^supremacy$|airforce festival|art of dance|\bid&t\b;Verwijderen;Merk van Art of Dance / ID&T (Airforce samen met Absolutely Fresh);Colleguescreening;
+B2S;supersized kingsday|\bb2s\b;Verwijderen;Evenement van B2S;Colleguescreening;
+ID&T / Apenkooi;straf.?werk|\bapenkooi\b;Verwijderen;Evenement van ID&T / Apenkooi;Colleguescreening;
+Friendly Fire;indian summer festival|friendly fire;Verwijderen;Evenement van Friendly Fire;Colleguescreening;
+Absolutely Fresh;\bhardfest\b|absolutely\s*fresh;Verwijderen;Organisatie met meerdere evenementen (Hardfest, Airforce);Colleguescreening;
+Rotterdam Ahoy;\bahoy\b;Verwijderen;"Grote venue; Het Dikste Cafe Aan De Haven is een evenement van Ahoy zelf";Colleguescreening;
+TivoliVredenburg;transition festival|tivoli\s*vredenburg;Verwijderen;Grote venue, organiseert Transition Festival;Colleguescreening;
+Paradiso;\bindiestad\b|^paradiso$;Verwijderen;Evenement van Paradiso (grote venue);Colleguescreening;
+Ancienne Belgique;feeerieen|ancienne belgique;Verwijderen;Evenement van Ancienne Belgique (grote venue);Colleguescreening;
+Roularta Media Group;roularta|landleven;Verwijderen;Mediabedrijf;Colleguescreening;
+DPG Media;margriet winter|\bdpg media\b;Verwijderen;Mediabedrijf;Colleguescreening;
+Allegra Group;amsterdam coffee festival|\ballegra\b;Verwijderen;Internationale evenementenorganisatie;Colleguescreening;
+Evangelische Omroep;eo.?jongerendag;Verwijderen;Landelijke omroep;Colleguescreening;
+Red Bull;red bull;Verwijderen;Multinational;Colleguescreening;
+Dudok Groep;frank borrel|\bdudok\b;Verwijderen;Onderdeel van Dudok (horecagroep);Colleguescreening;
+Tony's Chocolonely;chocolonely;Verwijderen;Groot merk;Colleguescreening;
+Ministerie van Defensie;luchtmachtdagen;Verwijderen;Evenement van de Koninklijke Luchtmacht;Colleguescreening;
+VNPF;\bvnpf\b;Verwijderen;Landelijke branchevereniging;Colleguescreening;
+Universiteit van Amsterdam;universiteit van amsterdam;Verwijderen;Onderdeel van de UvA;Colleguescreening;
+Natuurmonumenten;natuurmonumenten;Verwijderen;Landelijke organisatie;Colleguescreening;
+Centraal Museum;centraal museum|rietveld schroderhuis;Verwijderen;Onderdeel van het Centraal Museum;Colleguescreening;
+Landelijke sportbond;nederlandse ijshockey bond|\bknzb\b|roeibond|^nevobo$|\bngf\b|nederlands golf federatie|\bknltb\b|^knmv$|\bknvb\b|boksbond|dart bond|onderwatersport bond|^atletiekunie$|squash ?bond|\bknwu\b|wielren unie|rugby bond|^knbsb$|bridge bond|^schaakbond$|^dambond$|go bond|mahjong bond;Verwijderen;Landelijke sportbond (zelfde criterium als KNZB en NIJB in de colleguescreening);Colleguescreening (KNZB en NIJB) en aanvullende screening;
+NPO;^3fm$|\bavrotros\b;Verwijderen;Onderdeel van de publieke omroep (zelfde criterium als EO-Jongerendag);Aanvullende screening 24-11-2026;
+Buma/Stemra;buma cultuur;Verwijderen;Onderdeel van Buma/Stemra, landelijke organisatie;Aanvullende screening 24-11-2026;
+Rijksoverheid;rijksdienst voor het cultureel erfgoed;Verwijderen;Rijksdienst (Ministerie van OCW), zelfde criterium als Luchtmachtdagen;Aanvullende screening 24-11-2026;
+CPNB;\bcpnb\b|boekenbal;Verwijderen;Landelijke stichting (Collectieve Propaganda van het Nederlandse Boek);Aanvullende screening 24-11-2026;
+Verknipt (R&M Events);\bverknipt\b;Verwijderen;Meerdere grote evenementen per jaar: Verknipt Festival (ca. 32.000 bezoekers, 2022), Ziggo Dome-edities en NYE-edities tot 10.000 bezoekers;Aanvullende screening 24-11-2026;"https://www.festivalinfo.nl/festival/37116/Verknipt-Ziggo-Dome/2027/ ; https://followthebeat.nl/events/verknipt-nye-eindhoven-2024/"
+Grote stadions;olympisch stadion|stadion de kuip|philips stadion|grolsch veste|abe lenstra stadion|gel[dr]+edome;Verwijderen;Grote venue (stadion), zelfde criterium als Ahoy;Aanvullende screening 24-11-2026;
+Thialf;^thialf$;Verwijderen;Grote venue (ijsstadion, ca. 12.500 plaatsen);Aanvullende screening 24-11-2026;
+Betaald voetbal;^jong sparta|^jong almere city;Verwijderen;Beloftenteam van een betaaldvoetbalclub (Sparta Rotterdam, Almere City FC);Aanvullende screening 24-11-2026;
+Ride the Storm / Koudstaal Events;heaven open air|beach\s?rockers;Te controleren;Zelfde organisatie als Ride the Storm (Beachrockers, Heaven Open Air), die in de colleguescreening als te controleren staat;Aanvullende screening 24-11-2026;Zoho-tag Koudstaal events
+Armada Music;\barmada\b;Te controleren;Mogelijk onderdeel van Armada Music (groot label);Aanvullende screening 24-11-2026;
+FHM;\bfhm\b;Te controleren;Mediamerk, uitgever onbekend;Aanvullende screening 24-11-2026;
+Festival van Vlaanderen;festival van vlaanderen;Te controleren;Zelfde koepel als Festival van Vlaanderen Vlaams-Brabant (colleguescreening);Aanvullende screening 24-11-2026;
+Burgers' Zoo;burgers.?\s?zoo;Te controleren;"Grote attractie; totaal ticketvolume ligt waarschijnlijk ver boven 20.000";Aanvullende screening 24-11-2026;
+NOC*NSF / TeamNL;olympic experience|papendal;Te controleren;"Mogelijk gekoppeld aan NOC*NSF / TeamNL; niet bevestigd";Aanvullende screening 24-11-2026;
+Libema;libema;Te controleren;"Naam wijst op Libema (grote leisuregroep, o.a. Brabanthallen); koppeling niet bevestigd";Aanvullende screening 24-11-2026;https://www.libema.nl/en/organizing-agencies
+KWPN / KWBN;^kwpn$|^kwbn$;Te controleren;"Landelijk stamboek; mogelijk landelijke organisatie";Aanvullende screening 24-11-2026;
+Westergas;^westergas;Te controleren;Grote evenementenlocatie (Westergasterrein);Aanvullende screening 24-11-2026;
+Het Nationale Theater;nationale theater;Te controleren;Groot theatergezelschap met meerdere zalen;Aanvullende screening 24-11-2026;
+Gemeente;^gemeente\b;Te controleren;Overheidsorganisatie;Aanvullende screening 24-11-2026;
+Circuit Zandvoort;dtm zandvoort;Te controleren;Evenement op Circuit Zandvoort;Aanvullende screening 24-11-2026;
+Profclubs;feyenoord basketbal|heracles almelo|fc eindhoven;Te controleren;"Naam van een profclub; mogelijk onderdeel van een grotere club";Aanvullende screening 24-11-2026;
