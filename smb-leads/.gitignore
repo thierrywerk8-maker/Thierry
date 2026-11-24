@@ -1,0 +1,3 @@
+# Database met contactgegevens (persoonsgegevens) staat alleen in Google Drive
+*.xlsx
+__pycache__/

@@ -6,6 +6,7 @@ Invoer:
   --gescreend  SMB_leads_gescreend.csv                     (cp1252, puntkomma, kolom Screening)
   --zoho       Zoho-export Leads_<datum>.xlsx
   --regels     screening_regels.csv                        (utf-8, puntkomma)
+  --thierry    pdf-export van SMB Leads Thierry             (optioneel, contactgegevens)
 Uitvoer:
   --out        xlsx met tabbladen SMB database, Uitgesloten, Samenvatting, Bronnen
 
@@ -16,10 +17,14 @@ Werkwijze:
      "Te controleren" raken, blijven staan met Screening = "Te controleren".
   3. Zoho-leads worden op genormaliseerde bedrijfsnaam aan SMB-rijen gekoppeld.
      Zoho is leidend voor tickets, status en ticketsolution.
+  4. Landelijke sportbonden blijven in de database (Screening = Sportbond, blauw).
+  5. Contactgegevens komen uit Zoho en uit SMB Leads Thierry. Leads uit Thierry's lijst
+     die nog niet in de database staan, worden zonder screening toegevoegd.
 """
 import argparse
 import collections
 import csv
+import difflib
 import io
 import re
 import unicodedata
@@ -36,8 +41,15 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 HEADERS = ["Company", "Name Event", "Midcase Tickets P/Y", "Lead Vertical",
            "Ticketsolution", "System", "Lead Status", "Totaal aantal tickets"]
 TE_CONTROLEREN = "Te controleren"
-SPORTBOND = "Landelijke sportbond"
+SPORTBOND_ACTIE = "Sportbond"
 BLAUW = "CFE2F3"
+GRIJS = "F3F3F3"
+GRIJS_BAND = "E8E8E8"
+ROZE = "D5A6BD"
+THIERRY = "SMB Leads Thierry"
+CONTACT_COLS = [("Contact", "contact"), ("Functie", "functie"), ("Phone", "phone"),
+                ("Mail", "mail"), ("Insta", "insta"), ("Link. In", "linkedin")]
+EMPTY_CONTACT = {k: "" for _, k in CONTACT_COLS}
 COLLEGA = "Colleguescreening"
 
 
@@ -124,8 +136,93 @@ def load_zoho(path):
             "tickets": to_int(r[ix["Midcase Online Retail tickets p/y"]]),
             "solution": clean(str(r[ix["Current or last used Ticketsolution"]] or "")),
             "status": clean(str(r[ix["Lead Status"]] or "")),
+            "contact": clean_name(r[ix["Lead Name"]]),
+            "mail": clean_mail(r[ix["Email"]]),
+            "phone": clean_phone(r[ix["Mobile"]]),
         })
     return rows
+
+
+PLACEHOLDER = {"onbekend", "unknown", "tba", "tbc", "x", "geen", "idee", "nvt", "n.v.t."}
+
+
+def clean_name(v):
+    """Contactnaam zonder opvulwaarden zoals 'Onbekend Onbekend', 'tba tba' of 'Geen Idee'."""
+    s = re.sub(r"(?i)geen idee", " ", clean(str(v or "")))
+    tokens = [t for t in re.split(r"\s+", s) if t and t.lower().strip(".-/?") not in PLACEHOLDER
+              and re.search(r"\w", t)]
+    return " ".join(tokens)
+
+
+def clean_mail(v):
+    s = clean(str(v or ""))
+    return "" if re.match(r"(?i)^(geen|x|tba|tbc|unknown|onbekend|test)@", s) else s
+
+
+def same_person(a, b):
+    ta, tb = (set(re.findall(r"[a-z0-9]+", plain(x))) for x in (a, b))
+    if ta <= tb or tb <= ta:
+        return True
+    return difflib.SequenceMatcher(None, plain(a), plain(b)).ratio() >= 0.85
+
+
+def clean_phone(v):
+    """Telefoon als tekst. Nederlandse mobiele nummers zonder voorloopnul krijgen die terug;
+    notities zoals 'Bram bellen' blijven staan zoals ze zijn."""
+    s = clean(str(v or ""))
+    digits = re.sub(r"[^\d+]", "", s)
+    if not s or not re.fullmatch(r"\+?\d{9,13}", digits):
+        return s
+    if digits.startswith("6") and len(digits) == 9:
+        return "0" + digits
+    if digits.startswith("31") and len(digits) == 11:
+        return "+" + digits
+    return digits
+
+
+def load_thierry(path):
+    """Leest de tabel uit de pdf-export van 'SMB Leads Thierry'."""
+    import pdfplumber
+    cols = ["company", "tickets", "size", "locatie", "provincie",
+            "contact", "functie", "phone", "mail", "insta", "linkedin"]
+    rows = []
+    with pdfplumber.open(path) as pdf:
+        for page in pdf.pages:
+            for table in page.extract_tables():
+                for r in table[2:]:
+                    r = [clean((c or "").replace("\n", " ")) for c in r]
+                    if len(r) != len(cols) or not r[0]:
+                        continue
+                    row = dict(zip(cols, r))
+                    row["tickets"] = to_int(row["tickets"])
+                    row["contact"] = clean_name(row["contact"])
+                    row["phone"] = clean_phone(row["phone"])
+                    # links en e-mails zijn in de pdf afgekapt ('https://ww', 'bob@nex'): niet bruikbaar
+                    row["afgekapt"] = [n for n, k in (("Mail", "mail"), ("Insta", "insta"), ("LinkedIn", "linkedin"))
+                                       if row[k]]
+                    for k in ("mail", "insta", "linkedin"):
+                        row[k] = ""
+                    rows.append(row)
+    return rows
+
+
+GENERIEK = r"\b(festival|festivals|events?|music|label|collective|vof|the|de|het|nl)\b"
+STEDEN = r"\b(amsterdam|rotterdam|utrecht|groningen|den haag|eindhoven)\b"
+
+
+def thierry_keys(*names):
+    keys = set()
+    for n in names:
+        if not n:
+            continue
+        p = re.sub(r"\(.*?\)", " ", plain(n))
+        keys.add(norm_company(p))
+        zonder = re.sub(GENERIEK, " ", p)
+        keys.add(norm_company(zonder))
+        zonder_stad = norm_company(re.sub(STEDEN, " ", zonder))
+        if len(zonder_stad) >= 5:
+            keys.add(zonder_stad)
+    return {k for k in keys if len(k) >= 3}
 
 
 def load_rules(path):
@@ -161,6 +258,13 @@ def build(args):
         r["screening"] = ""
         r["notes"] = []
         in_range = r["tickets"] is not None and 5000 <= r["tickets"] <= 20000
+        if match_rule(rules, SPORTBOND_ACTIE, r["company"], r["event"]):
+            # sportbonden blijven altijd staan, ook als de collega ze verwijderde
+            if in_range and kept[r["raw_key"]] > 0:
+                kept[r["raw_key"]] -= 1
+            r["screening"] = SPORTBOND_ACTIE
+            log["smb_sportbond"] += 1
+            continue
         rem_rule = match_rule(rules, "Verwijderen", r["company"], r["event"])
         if in_range and kept[r["raw_key"]] == 0:
             r["excluded"] = {
@@ -222,10 +326,11 @@ def build(args):
             "company": r["company"], "event": r["event"], "tickets": r["tickets"],
             "vertical": r["vertical"], "solution": r["solution"], "system": r["system"],
             "status": r["status"], "screening": r["screening"], "bron": "SMB-lijst",
-            "notes": list(r["notes"]),
+            "notes": list(r["notes"]), **EMPTY_CONTACT,
         }
         if z:
             row["bron"] = "Beide"
+            row.update(contact=z["contact"], mail=z["mail"], phone=z["phone"])
             if z["tickets"] is not None and z["tickets"] != r["tickets"]:
                 row["notes"].append(f"SMB-lijst: {r['tickets']:,} tickets".replace(",", "."))
             if z["tickets"] is not None:
@@ -251,9 +356,15 @@ def build(args):
             continue
         row = {"company": z["company"], "event": "", "tickets": z["tickets"], "vertical": "",
                "solution": z["solution"], "system": "", "status": z["status"],
-               "screening": "", "bron": "Zoho", "notes": []}
+               "screening": "", "bron": "Zoho", "notes": [], **EMPTY_CONTACT,
+               "contact": z["contact"], "mail": z["mail"], "phone": z["phone"]}
         seen[key] = row
         nc = norm_company(z["company"])
+        if match_rule(rules, SPORTBOND_ACTIE, z["company"]):
+            row["screening"] = SPORTBOND_ACTIE
+            log["zoho_sportbond"] += 1
+            out.append(row)
+            continue
         rem_rule = match_rule(rules, "Verwijderen", z["company"])
         if rem_rule or nc in excluded_by_company:
             ex = ({"moeder": rem_rule["moederorganisatie"], "reden": rem_rule["reden"],
@@ -276,6 +387,40 @@ def build(args):
         if row.get("dubbel"):
             row["notes"].append(f"Staat {row['dubbel']}x in Zoho")
 
+    # 3. 'SMB Leads Thierry': contactgegevens aanvullen; ontbrekende leads toevoegen zonder screening
+    thierry = load_thierry(args.thierry) if args.thierry else []
+    index = collections.defaultdict(list)
+    for row in out + excluded:
+        for k in thierry_keys(row["company"], row["event"]):
+            index[k].append(row)
+    for t in thierry:
+        matches = []
+        for k in thierry_keys(t["company"]):
+            matches += [m for m in index.get(k, []) if m not in matches]
+        afgekapt = (f"{'/'.join(t['afgekapt'])} staat in SMB Leads Thierry maar is in de pdf afgekapt"
+                    if t["afgekapt"] else "")
+        if matches:
+            log["thierry_gekoppeld"] += 1
+            for m in matches:
+                if t["contact"] and m["contact"] and not same_person(m["contact"], t["contact"]):
+                    m["notes"].append(f"Zoho-contact: {m['contact']}")
+                for k in ("contact", "functie", "phone"):
+                    if t[k]:
+                        m[k] = t[k]
+                if t["contact"] or t["functie"] or t["phone"]:
+                    m["notes"].append("Contact uit SMB Leads Thierry")
+                if afgekapt:
+                    m["notes"].append(afgekapt)
+            continue
+        log["thierry_toegevoegd"] += 1
+        out.append({
+            "company": t["company"], "event": "", "tickets": t["tickets"], "vertical": "",
+            "solution": "", "system": "", "status": "", "screening": "", "bron": THIERRY,
+            "notes": [afgekapt] if afgekapt else [], **EMPTY_CONTACT,
+            "contact": t["contact"], "functie": t["functie"], "phone": t["phone"],
+        })
+    log["thierry_in"] = len(thierry)
+
     # sorteren zoals de SMB-lijst: oplopend op tickets, ontbrekende aantallen bovenaan
     key = lambda r: (r["tickets"] is not None, r["tickets"] or 0)
     out.sort(key=key)
@@ -294,15 +439,18 @@ def build(args):
 FONT = "Arial"
 NAVY = "1F3864"
 THIN = Side(style="thin", color="BFBFBF")
+CEL = Side(style="thin", color="D9D9D9")
+SCHEIDING = Side(style="thick", color="000000")
 
 
-def style_header(ws, ncols):
+def style_header(ws, ncols, contact_col):
     for c in range(1, ncols + 1):
         cell = ws.cell(row=1, column=c)
-        cell.font = Font(name=FONT, bold=True, color="FFFFFF", size=10)
-        cell.fill = PatternFill("solid", fgColor=NAVY)
+        is_contact = c >= contact_col
+        cell.font = Font(name=FONT, bold=True, size=10, color="000000" if is_contact else "FFFFFF")
+        cell.fill = PatternFill("solid", fgColor=ROZE if is_contact else NAVY)
         cell.alignment = Alignment(vertical="center", wrap_text=True)
-        cell.border = Border(bottom=THIN)
+        cell.border = Border(bottom=THIN, left=SCHEIDING if c == contact_col else None)
     ws.row_dimensions[1].height = 30
 
 
@@ -310,8 +458,7 @@ def write_rows(ws, rows, columns):
     for r_i, row in enumerate(rows, start=2):
         for c_i, (_, getter) in enumerate(columns, start=1):
             v = getter(row)
-            cell = ws.cell(row=r_i, column=c_i, value=v if v != "" else None)
-            cell.font = Font(name=FONT, size=10)
+            ws.cell(row=r_i, column=c_i, value=v if v != "" else None)
 
 
 def lead_columns(extra):
@@ -325,13 +472,29 @@ def lead_columns(extra):
         ("Lead Status", lambda r: r["status"]),
         ("Totaal aantal tickets", lambda r: None),
     ]
-    return base + extra
+    contact = [(h, (lambda r, k=k: r.get(k, ""))) for h, k in CONTACT_COLS]
+    return base + extra + contact
 
 
-def add_formats(ws, last_row, last_col_letter, red=True, blue=False):
-    end = last_row + 1000  # opmaak loopt door voor rijen die later worden toegevoegd
-    rng = f"A2:{last_col_letter}{end}"
-    if red:
+def add_formats(ws, last_row, ncols, contact_col, database=True):
+    """Lichtgrijze cellen, dikke scheidingslijn voor het contactblok en de kleurregels."""
+    end = last_row + 500  # opmaak loopt door voor rijen die later worden toegevoegd
+    last_col = get_column_letter(ncols)
+    rng = f"A2:{last_col}{end}"
+    fill = PatternFill("solid", fgColor=GRIJS)
+    phone_col = contact_col + 2
+    for row in ws.iter_rows(min_row=2, max_row=end, max_col=ncols):
+        for cell in row:
+            c = cell.column
+            cell.fill = fill
+            cell.font = Font(name=FONT, size=10, bold=(c == 8))
+            cell.border = Border(left=SCHEIDING if c == contact_col else CEL,
+                                 right=SCHEIDING if c == contact_col - 1 else CEL, top=CEL, bottom=CEL)
+            if c in (3, 8):
+                cell.number_format = "#,##0"
+            elif c == phone_col:
+                cell.number_format = "@"
+    if database:
         ws.conditional_formatting.add(
             f"C2:C{end}",
             FormulaRule(formula=['AND($A2<>"",OR($C2="",$C2=0))'],
@@ -345,22 +508,16 @@ def add_formats(ws, last_row, last_col_letter, red=True, blue=False):
             rng,
             FormulaRule(formula=[f'$I2="{TE_CONTROLEREN}"'],
                         fill=PatternFill("solid", fgColor="FCE5CD", bgColor="FCE5CD"), stopIfTrue=True))
-    if blue:
         ws.conditional_formatting.add(
             rng,
-            FormulaRule(formula=[f'$J2="{SPORTBOND}"'],
+            FormulaRule(formula=[f'$I2="{SPORTBOND_ACTIE}"'],
                         fill=PatternFill("solid", fgColor=BLAUW, bgColor=BLAUW), stopIfTrue=True))
     ws.conditional_formatting.add(
         rng,
         FormulaRule(formula=['AND($A2<>"",MOD(ROW(),2)=0)'],
-                    fill=PatternFill("solid", fgColor="F3F6FA", bgColor="F3F6FA")))
-    for col in ("C", "H"):
-        for row in ws.iter_rows(min_row=2, max_row=end, min_col=ord(col) - 64, max_col=ord(col) - 64):
-            for cell in row:
-                cell.number_format = "#,##0"
-                cell.font = Font(name=FONT, size=10, bold=(col == "H"))
+                    fill=PatternFill("solid", fgColor=GRIJS_BAND, bgColor=GRIJS_BAND)))
     ws.freeze_panes = "B2"
-    ws.auto_filter.ref = f"A1:{last_col_letter}{last_row}"
+    ws.auto_filter.ref = f"A1:{last_col}{last_row}"
 
 
 def build_workbook(out, excluded, log, args, rules):
@@ -379,18 +536,23 @@ def build_workbook(out, excluded, log, args, rules):
     write_rows(ws, out, cols)
     last = len(out) + 1
     ws["H2"] = "=SUM(C:C)"
-    style_header(ws, len(cols))
-    add_formats(ws, last, "K")
-    widths = [38, 34, 14, 30, 24, 20, 26, 14, 15, 11, 60]
+    contact_col = len(cols) - len(CONTACT_COLS) + 1
+    style_header(ws, len(cols), contact_col)
+    add_formats(ws, last, len(cols), contact_col)
+    widths = [38, 34, 14, 30, 24, 20, 26, 14, 15, 17, 50, 24, 22, 16, 30, 24, 24]
     for i, w in enumerate(widths, start=1):
         ws.column_dimensions[get_column_letter(i)].width = w
     ws["A1"].comment = Comment(
-        f"Bron: {args.smb_naam} ({log['smb_in']} rijen) en Zoho-export {args.zoho_naam} "
-        f"({log['zoho_in']} rijen), geupload {args.datum}. Gefilterd met screening_regels.csv "
-        f"en de colleguescreening ({args.gescreend_naam}). Zie tabblad Bronnen.", "SMB database")
+        f"Bron: {args.smb_naam} ({log['smb_in']} rijen), Zoho-export {args.zoho_naam} "
+        f"({log['zoho_in']} rijen) en {args.thierry_naam} ({log['thierry_in']} rijen), geupload {args.datum}. "
+        f"Gefilterd met screening_regels.csv en de colleguescreening ({args.gescreend_naam}). "
+        f"Zie tabblad Bronnen.", "SMB database")
     ws["C1"].comment = Comment(
-        "Rood: ticketaantal ontbreekt of is 0. Vul het aantal in; de cel wordt dan wit "
-        "en telt mee in het totaal in H2.", "SMB database")
+        "Rood: ticketaantal ontbreekt of is 0. Vul het aantal in; het rood verdwijnt dan "
+        "en de lead telt mee in het totaal in H2.", "SMB database")
+    ws.cell(row=1, column=contact_col).comment = Comment(
+        "Contactgegevens. Contact, Phone en Mail komen uit Zoho; Contact, Functie en Phone uit "
+        "SMB Leads Thierry gaan voor waar die er zijn.", "SMB database")
 
     # --- Uitgesloten
     wx = wb.create_sheet("Uitgesloten")
@@ -406,9 +568,11 @@ def build_workbook(out, excluded, log, args, rules):
         wx.cell(row=1, column=c, value=h)
     write_rows(wx, excluded, xcols)
     wx["H2"] = "=SUM(C:C)"
-    style_header(wx, len(xcols))
-    add_formats(wx, len(excluded) + 1, "N", red=False, blue=True)
-    for i, w in enumerate([38, 34, 14, 30, 24, 20, 26, 14, 11, 30, 60, 34, 40, 40], start=1):
+    xcontact = len(xcols) - len(CONTACT_COLS) + 1
+    style_header(wx, len(xcols), xcontact)
+    add_formats(wx, len(excluded) + 1, len(xcols), xcontact, database=False)
+    for i, w in enumerate([38, 34, 14, 30, 24, 20, 26, 14, 17, 30, 60, 34, 40, 40,
+                           24, 22, 16, 30, 24, 24], start=1):
         wx.column_dimensions[get_column_letter(i)].width = w
 
     # --- Samenvatting
@@ -421,18 +585,21 @@ def build_workbook(out, excluded, log, args, rules):
         ("Legenda", None),
         ("Rode rij", "Ticketaantal ontbreekt of is 0. Vul kolom C in; het rood verdwijnt dan."),
         ("Oranje rij", "Te controleren: mogelijk onderdeel van een grotere organisatie."),
-        ("Blauwe rij", "Tabblad Uitgesloten: landelijke sportbond, uitgesloten met hetzelfde criterium "
-                       "als KNZB en NIJB. Controleer of ze terug moeten."),
+        ("Blauwe rij", "Landelijke sportbond. Blijft in de database (Screening = Sportbond)."),
+        ("Roze kop", "Contactgegevens (Contact t/m Link. In), gescheiden door een dikke lijn."),
         (None, None),
         ("Kerncijfers", "Waarde"),
         ("Leads in database", f"=COUNTA({db}!$A$2:$A${n})"),
         ("Totaal aantal tickets", f"=SUM({db}!$C$2:$C${n})"),
         ("Leads met ticketaantal", f"=COUNTIFS({db}!$A$2:$A${n},\"<>\",{db}!$C$2:$C${n},\">0\")"),
-        ("Leads zonder ticketaantal (rood)", "=B9-B11"),
+        ("Leads zonder ticketaantal (rood)", "=B10-B12"),
         ("Leads te controleren (oranje)", f"=COUNTIF({db}!$I$2:$I${n},\"{TE_CONTROLEREN}\")"),
+        ("Sportbonden in database (blauw)", f"=COUNTIF({db}!$I$2:$I${n},\"{SPORTBOND_ACTIE}\")"),
+        ("Leads met contactpersoon", f"=COUNTIF({db}!$L$2:$L${n},\"?*\")"),
+        ("Leads met telefoonnummer", f"=COUNTIF({db}!$N$2:$N${n},\"?*\")"),
+        ("Leads met e-mailadres", f"=COUNTIF({db}!$O$2:$O${n},\"?*\")"),
         ("Uitgesloten leads", f"=COUNTA({ux}!$A$2:$A${n})"),
         ("Tickets van uitgesloten leads", f"=SUM({ux}!$C$2:$C${n})"),
-        ("Uitgesloten sportbonden (blauw)", f"=COUNTIF({ux}!$J$2:$J${n},\"{SPORTBOND}\")"),
         (None, None),
     ]
     for r_i, (a, b) in enumerate(lines, start=1):
@@ -456,13 +623,13 @@ def build_workbook(out, excluded, log, args, rules):
             sm.cell(row=tot, column=c, value=f"=SUM({L}{start_row + 1}:{L}{tot - 1})")
         return start_row, tot
 
-    t1 = table(len(lines) + 1, "Per bron", ["SMB-lijst", "Zoho", "Beide"], "J")
+    t1 = table(len(lines) + 1, "Per bron", ["SMB-lijst", "Zoho", "Beide", THIERRY], "J")
     statuses = sorted({r["status"] for r in out if r["status"]})
     t2 = table(t1[1] + 2, "Per Lead Status", statuses, "G")
     no_status_row = t2[1] + 1
     sm.cell(row=no_status_row, column=1, value="Zonder Lead Status")
-    sm.cell(row=no_status_row, column=2, value=f"=B9-B{t2[1]}")
-    sm.cell(row=no_status_row, column=3, value=f"=B10-C{t2[1]}")
+    sm.cell(row=no_status_row, column=2, value=f"=B10-B{t2[1]}")
+    sm.cell(row=no_status_row, column=3, value=f"=B11-C{t2[1]}")
 
     door = sorted({r["door"] for r in excluded})
     t3 = no_status_row + 2
@@ -478,7 +645,7 @@ def build_workbook(out, excluded, log, args, rules):
     sm.cell(row=t3_end, column=2, value=f"=SUM(B{t3 + 1}:B{t3_end - 1})")
     sm.cell(row=t3_end, column=3, value=f"=SUM(C{t3 + 1}:C{t3_end - 1})")
 
-    head_rows = {1, 3, 8, t1[0], t2[0], t3}
+    head_rows = {1, 3, 9, t1[0], t2[0], t3}
     total_rows = {t1[1], t2[1], t3_end}
     for row in sm.iter_rows(min_row=1, max_row=t3_end, max_col=4):
         for cell in row:
@@ -504,7 +671,8 @@ def build_workbook(out, excluded, log, args, rules):
     sm["A4"].fill = PatternFill("solid", fgColor="F4CCCC")
     sm["A5"].fill = PatternFill("solid", fgColor="FCE5CD")
     sm["A6"].fill = PatternFill("solid", fgColor=BLAUW)
-    for ref in ("B4", "B5", "B6"):
+    sm["A7"].fill = PatternFill("solid", fgColor=ROZE)
+    for ref in ("B4", "B5", "B6", "B7"):
         sm[ref].alignment = Alignment(horizontal="left")
     sm.column_dimensions["A"].width = 38
     for L in "BCD":
@@ -520,9 +688,14 @@ def build_workbook(out, excluded, log, args, rules):
          "Gebruikt om verwijderde leads en twijfelgevallen over te nemen"],
         [args.zoho_naam, "Zoho-export SMB-leads", log["zoho_in"], args.datum,
          "Gekoppeld op bedrijfsnaam; Zoho leidend voor tickets, status en ticketsolution; "
-         "dubbele leads (zelfde bedrijf en aantal) samengevoegd; contactgegevens niet overgenomen"],
+         "dubbele leads (zelfde bedrijf en aantal) samengevoegd; contactnaam, e-mail en mobiel overgenomen"],
+        [args.thierry_naam, "Outreachoverzicht met contactgegevens", log["thierry_in"], args.datum,
+         f"Contact, functie en telefoon toegevoegd bij {log['thierry_gekoppeld']} bestaande leads; "
+         f"{log['thierry_toegevoegd']} leads toegevoegd zonder screening. Mail-, Insta- en LinkedIn-links "
+         "zijn in de pdf afgekapt en daarom niet overgenomen"],
         ["screening_regels.csv", "Filterregels per moederorganisatie", len(rules), args.datum,
-         "Opgesteld uit de colleguescreening, aangevuld voor leads onder 5.000 tickets en Zoho-leads"],
+         "Opgesteld uit de colleguescreening, aangevuld voor leads onder 5.000 tickets en Zoho-leads; "
+         "landelijke sportbonden blijven in de database"],
     ]
     for r_i, vals in enumerate(brows, start=1):
         for c_i, v in enumerate(vals, start=1):
@@ -531,7 +704,7 @@ def build_workbook(out, excluded, log, args, rules):
             cell.alignment = Alignment(vertical="top", wrap_text=True)
             if r_i > 1 and c_i == 4:
                 cell.number_format = "@"
-    style_header(br, 5)
+    style_header(br, 5, 99)
     for i, w in enumerate([46, 36, 10, 14, 80], start=1):
         br.column_dimensions[get_column_letter(i)].width = w
 
@@ -552,6 +725,8 @@ def main():
     p.add_argument("--smb-naam", default="Small_to_medium_Business(Paylogic fit).csv")
     p.add_argument("--gescreend-naam", default="SMB_leads_gescreend.csv")
     p.add_argument("--zoho-naam", default="Leads_2026_11_24.xlsx")
+    p.add_argument("--thierry", help="pdf-export van SMB Leads Thierry")
+    p.add_argument("--thierry-naam", default="SMB Leads Thierry (pdf)")
     args = p.parse_args()
 
     out, excluded, log = build(args)
@@ -567,7 +742,13 @@ def main():
     print("SMB:     collega verwijderd", log["smb_collega_verwijderd"], "| regel verwijderd",
           log["smb_regel_verwijderd"], "| collega te controleren", log["smb_collega_te_controleren"],
           "| regel te controleren", log["smb_regel_te_controleren"])
-    print("Zoho-only verwijderd", log["zoho_verwijderd"])
+    print("Zoho-only verwijderd", log["zoho_verwijderd"], "| sportbonden behouden",
+          log["smb_sportbond"] + log["zoho_sportbond"])
+    print("Thierry: rijen", log["thierry_in"], "| gekoppeld", log["thierry_gekoppeld"],
+          "| toegevoegd", log["thierry_toegevoegd"])
+    contact = sum(1 for r in out if r["contact"])
+    print("Contact: met contactpersoon", contact, "| met mail", sum(1 for r in out if r["mail"]),
+          "| met telefoon", sum(1 for r in out if r["phone"]))
     print("Uitvoer: database", len(out), "| uitgesloten", len(excluded), "| te controleren", tc,
           "| zonder tickets", missing)
     print("Tickets: database", sum(r["tickets"] or 0 for r in out),
@@ -578,6 +759,7 @@ def main():
                 + log["zoho_dubbel"])
     print("Aansluiting SMB:", smb_acc, "==", log["smb_in"], "| Zoho:", zoho_acc, "==", log["zoho_in"])
     assert smb_acc == log["smb_in"] and zoho_acc == log["zoho_in"], "aansluiting klopt niet"
+    assert log["thierry_gekoppeld"] + log["thierry_toegevoegd"] == log["thierry_in"]
 
 
 if __name__ == "__main__":

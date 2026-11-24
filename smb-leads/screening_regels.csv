@@ -24,7 +24,7 @@ VNPF;\bvnpf\b;Verwijderen;Landelijke branchevereniging;Colleguescreening;
 Universiteit van Amsterdam;universiteit van amsterdam;Verwijderen;Onderdeel van de UvA;Colleguescreening;
 Natuurmonumenten;natuurmonumenten;Verwijderen;Landelijke organisatie;Colleguescreening;
 Centraal Museum;centraal museum|rietveld schroderhuis;Verwijderen;Onderdeel van het Centraal Museum;Colleguescreening;
-Landelijke sportbond;nederlandse ijshockey bond|\bknzb\b|roeibond|^nevobo$|\bngf\b|nederlands golf federatie|\bknltb\b|^knmv$|\bknvb\b|boksbond|dart bond|onderwatersport bond|^atletiekunie$|squash ?bond|\bknwu\b|wielren unie|rugby bond|^knbsb$|bridge bond|^schaakbond$|^dambond$|go bond|mahjong bond;Verwijderen;Landelijke sportbond (zelfde criterium als KNZB en NIJB in de colleguescreening);Colleguescreening (KNZB en NIJB) en aanvullende screening;
+Landelijke sportbond;nederlandse ijshockey bond|\bknzb\b|roeibond|^nevobo$|\bngf\b|nederlands golf federatie|\bknltb\b|^knmv$|\bknvb\b|boksbond|dart bond|onderwatersport bond|^atletiekunie$|squash ?bond|\bknwu\b|wielren unie|rugby bond|^knbsb$|bridge bond|^schaakbond$|^dambond$|go bond|mahjong bond;Sportbond;Landelijke sportbond: blijft in de database, blauw gemarkeerd;Colleguescreening (KNZB en NIJB) en aanvullende screening;
 NPO;^3fm$|\bavrotros\b;Verwijderen;Onderdeel van de publieke omroep (zelfde criterium als EO-Jongerendag);Aanvullende screening 24-11-2026;
 Buma/Stemra;buma cultuur;Verwijderen;Onderdeel van Buma/Stemra, landelijke organisatie;Aanvullende screening 24-11-2026;
 Rijksoverheid;rijksdienst voor het cultureel erfgoed;Verwijderen;Rijksdienst (Ministerie van OCW), zelfde criterium als Luchtmachtdagen;Aanvullende screening 24-11-2026;
