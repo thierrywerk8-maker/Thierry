@@ -36,6 +36,8 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 HEADERS = ["Company", "Name Event", "Midcase Tickets P/Y", "Lead Vertical",
            "Ticketsolution", "System", "Lead Status", "Totaal aantal tickets"]
 TE_CONTROLEREN = "Te controleren"
+SPORTBOND = "Landelijke sportbond"
+BLAUW = "CFE2F3"
 COLLEGA = "Colleguescreening"
 
 
@@ -326,7 +328,7 @@ def lead_columns(extra):
     return base + extra
 
 
-def add_formats(ws, last_row, last_col_letter, red=True):
+def add_formats(ws, last_row, last_col_letter, red=True, blue=False):
     end = last_row + 1000  # opmaak loopt door voor rijen die later worden toegevoegd
     rng = f"A2:{last_col_letter}{end}"
     if red:
@@ -343,6 +345,11 @@ def add_formats(ws, last_row, last_col_letter, red=True):
             rng,
             FormulaRule(formula=[f'$I2="{TE_CONTROLEREN}"'],
                         fill=PatternFill("solid", fgColor="FCE5CD", bgColor="FCE5CD"), stopIfTrue=True))
+    if blue:
+        ws.conditional_formatting.add(
+            rng,
+            FormulaRule(formula=[f'$J2="{SPORTBOND}"'],
+                        fill=PatternFill("solid", fgColor=BLAUW, bgColor=BLAUW), stopIfTrue=True))
     ws.conditional_formatting.add(
         rng,
         FormulaRule(formula=['AND($A2<>"",MOD(ROW(),2)=0)'],
@@ -400,7 +407,7 @@ def build_workbook(out, excluded, log, args, rules):
     write_rows(wx, excluded, xcols)
     wx["H2"] = "=SUM(C:C)"
     style_header(wx, len(xcols))
-    add_formats(wx, len(excluded) + 1, "N", red=False)
+    add_formats(wx, len(excluded) + 1, "N", red=False, blue=True)
     for i, w in enumerate([38, 34, 14, 30, 24, 20, 26, 14, 11, 30, 60, 34, 40, 40], start=1):
         wx.column_dimensions[get_column_letter(i)].width = w
 
@@ -414,15 +421,18 @@ def build_workbook(out, excluded, log, args, rules):
         ("Legenda", None),
         ("Rode rij", "Ticketaantal ontbreekt of is 0. Vul kolom C in; het rood verdwijnt dan."),
         ("Oranje rij", "Te controleren: mogelijk onderdeel van een grotere organisatie."),
+        ("Blauwe rij", "Tabblad Uitgesloten: landelijke sportbond, uitgesloten met hetzelfde criterium "
+                       "als KNZB en NIJB. Controleer of ze terug moeten."),
         (None, None),
         ("Kerncijfers", "Waarde"),
         ("Leads in database", f"=COUNTA({db}!$A$2:$A${n})"),
         ("Totaal aantal tickets", f"=SUM({db}!$C$2:$C${n})"),
         ("Leads met ticketaantal", f"=COUNTIFS({db}!$A$2:$A${n},\"<>\",{db}!$C$2:$C${n},\">0\")"),
-        ("Leads zonder ticketaantal (rood)", "=B8-B10"),
+        ("Leads zonder ticketaantal (rood)", "=B9-B11"),
         ("Leads te controleren (oranje)", f"=COUNTIF({db}!$I$2:$I${n},\"{TE_CONTROLEREN}\")"),
         ("Uitgesloten leads", f"=COUNTA({ux}!$A$2:$A${n})"),
         ("Tickets van uitgesloten leads", f"=SUM({ux}!$C$2:$C${n})"),
+        ("Uitgesloten sportbonden (blauw)", f"=COUNTIF({ux}!$J$2:$J${n},\"{SPORTBOND}\")"),
         (None, None),
     ]
     for r_i, (a, b) in enumerate(lines, start=1):
@@ -446,13 +456,13 @@ def build_workbook(out, excluded, log, args, rules):
             sm.cell(row=tot, column=c, value=f"=SUM({L}{start_row + 1}:{L}{tot - 1})")
         return start_row, tot
 
-    t1 = table(16, "Per bron", ["SMB-lijst", "Zoho", "Beide"], "J")
+    t1 = table(len(lines) + 1, "Per bron", ["SMB-lijst", "Zoho", "Beide"], "J")
     statuses = sorted({r["status"] for r in out if r["status"]})
     t2 = table(t1[1] + 2, "Per Lead Status", statuses, "G")
     no_status_row = t2[1] + 1
     sm.cell(row=no_status_row, column=1, value="Zonder Lead Status")
-    sm.cell(row=no_status_row, column=2, value=f"=B8-B{t2[1]}")
-    sm.cell(row=no_status_row, column=3, value=f"=B9-C{t2[1]}")
+    sm.cell(row=no_status_row, column=2, value=f"=B9-B{t2[1]}")
+    sm.cell(row=no_status_row, column=3, value=f"=B10-C{t2[1]}")
 
     door = sorted({r["door"] for r in excluded})
     t3 = no_status_row + 2
@@ -468,7 +478,7 @@ def build_workbook(out, excluded, log, args, rules):
     sm.cell(row=t3_end, column=2, value=f"=SUM(B{t3 + 1}:B{t3_end - 1})")
     sm.cell(row=t3_end, column=3, value=f"=SUM(C{t3 + 1}:C{t3_end - 1})")
 
-    head_rows = {1, 3, 7, t1[0], t2[0], t3}
+    head_rows = {1, 3, 8, t1[0], t2[0], t3}
     total_rows = {t1[1], t2[1], t3_end}
     for row in sm.iter_rows(min_row=1, max_row=t3_end, max_col=4):
         for cell in row:
@@ -493,7 +503,9 @@ def build_workbook(out, excluded, log, args, rules):
             sm.cell(row=r_i, column=c).border = Border(top=THIN)
     sm["A4"].fill = PatternFill("solid", fgColor="F4CCCC")
     sm["A5"].fill = PatternFill("solid", fgColor="FCE5CD")
-    sm["B4"].alignment = sm["B5"].alignment = Alignment(horizontal="left")
+    sm["A6"].fill = PatternFill("solid", fgColor=BLAUW)
+    for ref in ("B4", "B5", "B6"):
+        sm[ref].alignment = Alignment(horizontal="left")
     sm.column_dimensions["A"].width = 38
     for L in "BCD":
         sm.column_dimensions[L].width = 16
